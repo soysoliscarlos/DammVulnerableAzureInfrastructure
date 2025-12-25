@@ -1,5 +1,7 @@
 # AzureGoat : A Damn Vulnerable Azure Infrastructure
 
+> 🇪🇸 **¿Hablas español?** Lee la [documentación completa en español (RESUMEN-ES.md)](./RESUMEN-ES.md) para una guía detallada del repositorio.
+
 ![1](https://user-images.githubusercontent.com/25884689/183740998-da6f7ae7-2df0-4557-a6f5-2f0040ebe0dc.png)
 
 Compromising an organization's cloud infrastructure is like sitting on a gold mine for attackers. And sometimes, a simple misconfiguration or a vulnerability in web applications, is all an attacker needs to compromise the entire infrastructure. Since the cloud is relatively new, many developers are not fully aware of the threatscape and they end up deploying a vulnerable cloud infrastructure. Microsoft Azure cloud has become the second-largest vendor by market share in the cloud infrastructure providers (as per multiple reports), just behind AWS. There are numerous tools and vulnerable applications available for AWS for the security professional to perform attack/defense practices, but it is not the case with Azure. There are far fewer options available to the community.
