@@ -137,7 +137,7 @@ Navigate to your GitHub repository → Settings → Secrets and variables → Ac
 **Required Secret:**
 
 | Secret Name | Description | Value |
-|------------|-------------|-------|
+|-------------|-------------|-------|
 | `AZURE_CREDENTIALS` | Complete JSON output from the `az ad sp create-for-rbac` command | Paste the entire JSON output |
 
 **Alternative Configuration (Individual Secrets):**
