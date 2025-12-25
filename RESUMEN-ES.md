@@ -81,7 +81,9 @@ Este repositorio está diseñado para que puedas **aprender y practicar**:
 - Ubuntu 18.04 LTS
 - Identidad Managed Identity asignada
 - SSH habilitado con credenciales débiles
-- Usuario: `azureuser` | Password: `St0r95p@$sw0rd@1265463541`
+- Usuario: `azureuser` | Password: `St0r95p@$sw0rd@1265463541` (**⚠️ Solo para demostración**)
+
+**NOTA IMPORTANTE DE SEGURIDAD:** Todas las credenciales mostradas en este documento son únicamente para fines de demostración educativa. NUNCA uses estas credenciales en ningún entorno, ni siquiera para pruebas personales. Siempre genera credenciales únicas y seguras.
 
 #### 5. **Azure Automation**
 - Cuenta de automatización con RunBooks
@@ -281,6 +283,8 @@ admin_password = "St0r95p@$sw0rd@1265463541"  # VM password
 JWT_SECRET = "T2BYL6#]zc>Byuzu"               # JWT secret en plain text
 ```
 
+**⚠️ ADVERTENCIA:** Estas son credenciales de DEMOSTRACIÓN únicamente. NUNCA uses estas credenciales en ningún entorno real, ni siquiera para pruebas. Siempre genera credenciales únicas y seguras para cada despliegue.
+
 **Impacto:**
 - Acceso directo a VM por SSH
 - Posibilidad de forjar tokens JWT
@@ -369,7 +373,8 @@ DammVulnerableAzureInfrastructure/
    # Azure CLI
    curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
    
-   # Terraform >= 0.13
+   # Terraform >= 0.13 (recomendado: 1.5.0 o superior)
+   # Instalar desde https://www.terraform.io/downloads
    wget https://releases.hashicorp.com/terraform/1.5.0/terraform_1.5.0_linux_amd64.zip
    unzip terraform_1.5.0_linux_amd64.zip
    sudo mv terraform /usr/local/bin/
@@ -504,6 +509,8 @@ Target_URL = "https://appazgoat<ID>-function-app.azurewebsites.net"
 
 #### **Rutas de Ataque Disponibles:**
 
+**Nota:** El siguiente diagrama usa sintaxis Mermaid. Si no se visualiza correctamente en tu visor de Markdown, consulta la versión online o usa un visor compatible con Mermaid (GitHub, GitLab, VS Code con extensión).
+
 ```mermaid
 graph TD
     A[Aplicación Web] --> B[IDOR]
@@ -561,7 +568,7 @@ graph TD
 ## 📖 Recursos Adicionales
 
 ### **Videos Tutoriales:**
-- [Playlist Module 1 Exploitation](https://www.youtube.com/playlist?list=PLcIpBb4raSZGdYHKpqIu5Boc2ziga4oGY)
+- [Playlist Module 1 Exploitation](https://www.youtube.com/playlist?list=PLcIpBb4raSZGdYHKpqIu5Boc2ziga4oGY) - Videos oficiales del proyecto INE Labs
 
 ### **Presentaciones:**
 - **BlackHat USA 2022:** Arsenal presentation
