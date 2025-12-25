@@ -80,6 +80,111 @@ terraform init
 terraform apply --auto-approve
 ```
 
+## Automated Deployment with GitHub Actions
+
+This repository includes a GitHub Actions workflow that automatically deploys the AzureGoat infrastructure when code is pushed to the main branch. The workflow uses Azure App Registration (Service Principal) for authentication.
+
+### Prerequisites for GitHub Actions Deployment
+
+1. **Azure Account** with appropriate permissions
+2. **Azure App Registration** (Service Principal) with Contributor access to your subscription
+3. **Resource Group** named "azuregoat_app" must exist in your Azure subscription
+
+### Setting up Azure App Registration
+
+Follow these steps to create and configure an Azure App Registration for GitHub Actions:
+
+**Step 1.** Create an App Registration (Service Principal)
+
+```sh
+# Create a service principal and assign Contributor role to your subscription
+az ad sp create-for-rbac --name "github-actions-azuregoat" \
+  --role contributor \
+  --scopes /subscriptions/{subscription-id} \
+  --sdk-auth
+```
+
+Replace `{subscription-id}` with your actual Azure Subscription ID.
+
+**Step 2.** The command above will output JSON with credentials. Save this entire JSON output - you'll need it for GitHub secrets.
+
+Example output:
+```json
+{
+  "clientId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "clientSecret": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "subscriptionId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "tenantId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "activeDirectoryEndpointUrl": "https://login.microsoftonline.com",
+  "resourceManagerEndpointUrl": "https://management.azure.com/",
+  "activeDirectoryGraphResourceId": "https://graph.windows.net/",
+  "sqlManagementEndpointUrl": "https://management.core.windows.net:8443/",
+  "galleryEndpointUrl": "https://gallery.azure.com/",
+  "managementEndpointUrl": "https://management.core.windows.net/"
+}
+```
+
+**Step 3.** Create the resource group if it doesn't exist
+
+```sh
+az group create --name azuregoat_app --location eastus
+```
+
+### Configuring GitHub Secrets
+
+Navigate to your GitHub repository → Settings → Secrets and variables → Actions, and add the following secret:
+
+**Required Secret:**
+
+| Secret Name | Description | Value |
+|------------|-------------|-------|
+| `AZURE_CREDENTIALS` | Complete JSON output from the `az ad sp create-for-rbac` command | Paste the entire JSON output |
+
+**Alternative Configuration (Individual Secrets):**
+
+If you prefer to use individual secrets instead of the JSON format, you can use:
+
+| Secret Name | Description | Example Value |
+|------------|-------------|---------------|
+| `AZURE_CLIENT_ID` | Application (client) ID of the App Registration | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` |
+| `AZURE_TENANT_ID` | Directory (tenant) ID of your Azure AD | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` |
+| `AZURE_CLIENT_SECRET` | Client secret of the App Registration | `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx` |
+| `AZURE_SUBSCRIPTION_ID` | Your Azure Subscription ID | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` |
+
+To use individual secrets, edit the `.github/workflows/terraform-deploy.yml` file and uncomment the alternative Azure Login step.
+
+### How the GitHub Actions Workflow Works
+
+The workflow (`.github/workflows/terraform-deploy.yml`) is triggered on:
+- **Push to main branch**: Automatically deploys changes
+- **Manual trigger**: Can be run manually from the Actions tab
+
+The workflow performs these steps:
+1. Checks out the repository code
+2. Sets up Python environment (required for CosmosDB scripts)
+3. Authenticates to Azure using the App Registration credentials
+4. Installs Terraform
+5. Runs `terraform init` to initialize the working directory
+6. Runs `terraform plan` to preview changes
+7. Runs `terraform apply` to deploy the infrastructure
+8. Displays the deployed application URL
+
+### Security Considerations
+
+- The App Registration has **Contributor** access to your Azure subscription
+- Keep your client secret secure and rotate it regularly
+- Consider using **Azure Workload Identity** (OIDC) for enhanced security in production environments
+- Review the deployed infrastructure regularly to ensure it's not exposed to the public internet unnecessarily
+- This is a **vulnerable by design** infrastructure - only deploy in isolated, non-production environments
+
+### Viewing Deployment Status
+
+After pushing to the main branch:
+1. Go to the **Actions** tab in your GitHub repository
+2. Click on the latest workflow run
+3. Monitor the deployment progress
+4. Once complete, the Target URL will be displayed in the job output
+
 # Modules
 
 ## Module 1
