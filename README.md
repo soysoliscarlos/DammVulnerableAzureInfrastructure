@@ -71,9 +71,7 @@ az login
 
 And follow the steps to sign in.
 
-**Step 3.** Create a resource group with the name "azuregoat_app".
-
-**Step 4.** Use terraform to deploy AzureGoat
+**Step 3.** Use terraform to deploy AzureGoat
 
 ```sh
 terraform init
@@ -88,7 +86,8 @@ This repository includes a GitHub Actions workflow that automatically deploys th
 
 1. **Azure Account** with appropriate permissions
 2. **Azure App Registration** (Service Principal) with Contributor access to your subscription
-3. **Resource Group** named "azuregoat_app" must exist in your Azure subscription
+
+Note: The resource group "azuregoat_app" will be created automatically by Terraform.
 
 ### Setting up Azure App Registration
 
@@ -122,12 +121,6 @@ Example output:
   "galleryEndpointUrl": "https://gallery.azure.com/",
   "managementEndpointUrl": "https://management.core.windows.net/"
 }
-```
-
-**Step 3.** Create the resource group if it doesn't exist
-
-```sh
-az group create --name azuregoat_app --location eastus
 ```
 
 ### Configuring GitHub Secrets
