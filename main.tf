@@ -195,7 +195,7 @@ resource "azurerm_linux_function_app" "function_app" {
     }
   }
   
-  depends_on = [azurerm_cosmosdb_account.db, azurerm_storage_account.storage_account, null_resource.env_replace]
+  depends_on = [azurerm_cosmosdb_account.db, azurerm_storage_account.storage_account, null_resource.env_replace, azurerm_resource_group.rg]
 }
 
 
@@ -381,7 +381,8 @@ resource "azurerm_network_interface" "net_int" {
   depends_on = [
     azurerm_network_security_group.net_sg,
     azurerm_public_ip.VM_PublicIP,
-    azurerm_subnet.vNet_subnet
+    azurerm_subnet.vNet_subnet,
+    azurerm_resource_group.rg
   ]
 }
 
@@ -424,7 +425,8 @@ resource "azurerm_linux_virtual_machine" "dev-vm" {
   computer_name = "developerVM"
   
   depends_on = [
-    azurerm_network_interface.net_int
+    azurerm_network_interface.net_int,
+    azurerm_resource_group.rg
   ]
 }
 
@@ -524,6 +526,8 @@ resource "azurerm_automation_runbook" "dev_automation_runbook" {
   description             = "This is an example runbook"
   runbook_type            = "PowerShellWorkflow"
   content = data.local_file.runbook_file.content
+
+  depends_on = [azurerm_resource_group.rg]
 }
 
 
@@ -566,7 +570,7 @@ resource "azurerm_linux_function_app" "function_app_front" {
     }
   }
   
-  depends_on = [null_resource.file_replacement_upload]
+  depends_on = [null_resource.file_replacement_upload, azurerm_resource_group.rg]
 }
 
 resource "null_resource" "file_replacement_vm_ip" {
