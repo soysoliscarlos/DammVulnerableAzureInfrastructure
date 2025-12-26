@@ -1,4 +1,4 @@
-name: Deploy AzureGoat Infrastructure
+name: Deploy DAVI Infrastructure
 
 on:
   push:
