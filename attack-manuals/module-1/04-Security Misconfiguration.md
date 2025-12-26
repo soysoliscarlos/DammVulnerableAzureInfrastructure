@@ -35,7 +35,7 @@ Visit the link- https://codebeautify.org/htmlviewer to beautify your code.
 Now, copy the URL and paste it into the browser.
 
 ```
-https://appazgoatstoga.blob.core.windows.net/prod-appazgoat-storage-container/webfiles/build/favicon/Logo.png
+https://appazdavistoga.blob.core.windows.net/prod-appazdavi-storage-container/webfiles/build/favicon/Logo.png
 ```
 
 Navigate to this URL. You will get an output like this.
@@ -55,7 +55,7 @@ Notice that the URL is having the container name in it and it is starting with `
 The development container URL is mentioned below. Here we changed prod to dev.
 
 ```
-https://appazgoatstoga.blob.core.windows.net/dev-appazgoat-storage-container/webfiles/build/favicon/Logo.png
+https://appazdavistoga.blob.core.windows.net/dev-appazdavi-storage-container/webfiles/build/favicon/Logo.png
 ```
 This URL will result in the same image as above and that means there exists a dev container.
 

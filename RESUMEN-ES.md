@@ -1,7 +1,7 @@
-# AzureGoat - Resumen Detallado del Repositorio
+# AzureDavi - Resumen Detallado del Repositorio
 
 ## 📋 Índice
-1. [¿Qué es AzureGoat?](#qué-es-azuregoat)
+1. [¿Qué es AzureDavi?](#qué-es-azuredavi)
 2. [Propósito y Objetivos](#propósito-y-objetivos)
 3. [Arquitectura y Componentes](#arquitectura-y-componentes)
 4. [Vulnerabilidades Implementadas](#vulnerabilidades-implementadas)
@@ -13,9 +13,9 @@
 
 ---
 
-## 🎯 ¿Qué es AzureGoat?
+## 🎯 ¿Qué es AzureDavi?
 
-**AzureGoat** es una infraestructura vulnerable diseñada intencionalmente en Microsoft Azure que simula un entorno real pero con vulnerabilidades de seguridad conocidas. Es un proyecto educativo desarrollado por **INE (INE Labs)** para enseñar conceptos de seguridad en la nube.
+**AzureDavi** es una infraestructura vulnerable diseñada intencionalmente en Microsoft Azure que simula un entorno real pero con vulnerabilidades de seguridad conocidas. Es un proyecto educativo basado en el trabajo de **INE (INE Labs)** para enseñar conceptos de seguridad en la nube.
 
 ### Características Principales:
 - 🔴 **Infraestructura vulnerable por diseño** - Contiene vulnerabilidades reales para aprendizaje
@@ -104,7 +104,7 @@ Este repositorio está diseñado para que puedas **aprender y practicar**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     AZUREGOAT ARCHITECTURE                       │
+│                     AZUREDAVI ARCHITECTURE                       │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                  │
 │  Usuario → Azure Function (Frontend)                            │
@@ -389,7 +389,7 @@ DammVulnerableAzureInfrastructure/
 #### **Paso 1: Clonar el Repositorio**
 ```bash
 git clone https://github.com/ine-labs/AzureGoat
-cd AzureGoat
+cd DammVulnerableAzureInfrastructure
 ```
 
 #### **Paso 2: Autenticarse en Azure**
@@ -398,24 +398,35 @@ az login
 ```
 Esto abrirá un navegador para autenticación. Sigue las instrucciones.
 
-#### **Paso 3: Crear Resource Group**
+#### **Paso 3: Configurar el Subscription ID**
 ```bash
-# Crear el resource group manualmente
-az group create --name azuregoat_app --location eastus
+export TF_VAR_subscription_id="<tu-subscription-id>"
 ```
 
-**⚠️ IMPORTANTE:** El resource group DEBE llamarse `azuregoat_app` (está hardcoded en el código)
+Puedes obtener tu subscription ID ejecutando:
 
-#### **Paso 4: Inicializar Terraform**
+```bash
+az account show --query id -o tsv
+```
+
+#### **Paso 4: Crear Resource Group**
+```bash
+# Crear el resource group manualmente
+az group create --name azuredavi_app --location eastus
+```
+
+**⚠️ IMPORTANTE:** El resource group DEBE llamarse `azuredavi_app` (está hardcoded en el código)
+
+#### **Paso 5: Inicializar Terraform**
 ```bash
 terraform init
 ```
 
 Esto descargará los providers necesarios:
-- `hashicorp/azurerm` v3.11.0
-- `hashicorp/random` v3.1.0
+- `hashicorp/azurerm` v4.0+
+- `hashicorp/random` v3.6+
 
-#### **Paso 5: Desplegar la Infraestructura**
+#### **Paso 6: Desplegar la Infraestructura**
 ```bash
 terraform apply --auto-approve
 ```
@@ -434,7 +445,7 @@ terraform apply --auto-approve
 Al finalizar, Terraform mostrará:
 ```
 Outputs:
-Target_URL = "https://appazgoat<ID>-function-app.azurewebsites.net"
+Target_URL = "https://appazdavi<ID>-function-app.azurewebsites.net"
 ```
 
 **¡Esta es la URL de tu aplicación vulnerable!**
@@ -669,7 +680,7 @@ python3 --version
 
 ### **🚨 SOLO PARA AMBIENTES DE PRUEBA**
 
-**NUNCA uses AzureGoat en:**
+**NUNCA uses AzureDavi en:**
 - ❌ Entornos de producción
 - ❌ Redes corporativas
 - ❌ Suscripciones de Azure con datos reales
@@ -677,7 +688,7 @@ python3 --version
 
 ### **💰 Costos de Azure:**
 
-AzureGoat crea recursos que **GENERAN COSTOS:**
+AzureDavi crea recursos que **GENERAN COSTOS:**
 - Azure Functions (consumo)
 - Cosmos DB Serverless
 - Storage Accounts
@@ -757,13 +768,13 @@ terraform destroy --auto-approve
 
 ## 🎓 Preguntas Frecuentes (FAQ)
 
-### **Q: ¿Es legal usar AzureGoat?**
+### **Q: ¿Es legal usar AzureDavi?**
 **A:** Sí, siempre y cuando:
 - Lo uses en TU propia suscripción Azure
 - No ataques infraestructuras de terceros
 - Fines educativos únicamente
 
-### **Q: ¿Cuánto cuesta ejecutar AzureGoat?**
+### **Q: ¿Cuánto cuesta ejecutar AzureDavi?**
 **A:** Aproximadamente $5-15 USD por día dependiendo del uso. **DESTRUYE** recursos cuando termines.
 
 ### **Q: ¿Necesito conocimientos previos?**
@@ -773,7 +784,7 @@ terraform destroy --auto-approve
 - Fundamentos de web security
 - Terraform (básico)
 
-### **Q: ¿Puedo usar AzureGoat para certificaciones?**
+### **Q: ¿Puedo usar AzureDavi para certificaciones?**
 **A:** Sí, es excelente para preparar:
 - AZ-500 (Azure Security)
 - CEH (Certified Ethical Hacker)
@@ -793,7 +804,7 @@ terraform destroy --auto-approve
 
 ## 📝 Resumen Ejecutivo
 
-**AzureGoat es tu laboratorio personal de seguridad en Azure.** Te permite:
+**AzureDavi es tu laboratorio personal de seguridad en Azure.** Te permite:
 
 ✅ **Aprender haciendo** - No solo teoría, práctica real  
 ✅ **Entorno seguro** - Tu propia infraestructura aislada  
@@ -818,13 +829,13 @@ terraform destroy --auto-approve
 ```bash
 # 1. Clonar repo
 git clone https://github.com/ine-labs/AzureGoat
-cd AzureGoat
+cd DammVulnerableAzureInfrastructure
 
 # 2. Login Azure
 az login
 
 # 3. Crear resource group
-az group create --name azuregoat_app --location eastus
+az group create --name azuredavi_app --location eastus
 
 # 4. Desplegar
 terraform init
@@ -859,5 +870,5 @@ terraform init -upgrade
 
 ---
 
-*Documento creado para facilitar el aprendizaje y uso de AzureGoat*  
+*Documento creado para facilitar el aprendizaje y uso de AzureDavi*  
 *Si tienes preguntas, consulta la documentación oficial o la comunidad de INE*

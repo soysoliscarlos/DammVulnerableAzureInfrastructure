@@ -43,10 +43,10 @@ The Virtual Machine name and principal ID were retrieved successfully.
 **Step 4:** Check the level of access given to our Virtual Machine.
 
 ```
-az role assignment list -g azuregoat_app
+az role assignment list -g azuredavi_app
 ```
 
-**Note:** If your resource group has a different name, make sure to replace "azuregoat_app" with the actual name of your resource group to ensure that the commands are executed on the correct resource group.
+**Note:** If your resource group has a different name, make sure to replace "azuredavi_app" with the actual name of your resource group to ensure that the commands are executed on the correct resource group.
 
 Now, check the level of access given to our Virtual Machine.
 
@@ -75,10 +75,10 @@ We found an automation account with Owner privileges.
 **Step 6:** Check for the runbooks to perform privileges escalation.
 
 ```
-az automation runbook list --automation-account-name <Automation-account-name> -g azuregoat_app 
+az automation runbook list --automation-account-name <Automation-account-name> -g azuredavi_app 
 ```
 
-**Note:** Substitute the name of the automation account with the name of the automation account obtained by listing and matching the principal ID of the resource and also if your resource group has a different name, make sure to replace "azuregoat_app" with the actual name of your resource group to ensure that the commands are executed on the correct resource group.
+**Note:** Substitute the name of the automation account with the name of the automation account obtained by listing and matching the principal ID of the resource and also if your resource group has a different name, make sure to replace "azuredavi_app" with the actual name of your resource group to ensure that the commands are executed on the correct resource group.
 
 ![](https://user-images.githubusercontent.com/65826354/183737366-32394666-7473-4d38-a266-817cf66c0a68.png)
 
@@ -122,10 +122,10 @@ az automation runbook start --automation-account-name "dev-automation-account-te
 **Step 9:** Check the role assignment list.
 
 ```
-az role assignment list -g azuregoat_app
+az role assignment list -g azuredavi_app
 ```
 
-**Note:** It may take some time to switch from "Contributor" to "Owner" by using the Runbook. If your resource group has a different name, make sure to replace "azuregoat_app" with the actual name of your resource group
+**Note:** It may take some time to switch from "Contributor" to "Owner" by using the Runbook. If your resource group has a different name, make sure to replace "azuredavi_app" with the actual name of your resource group
 
 Find our VM using the Principal ID.
 

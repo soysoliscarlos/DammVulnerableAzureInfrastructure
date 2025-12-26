@@ -1,31 +1,3 @@
-terraform {
-  required_version = ">= 1.9.0"
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~> 4.0"
-    }
-    random = {
-      source  = "hashicorp/random"
-      version = "~> 3.6"
-    }
-  }
-}
-
-provider "azurerm" {
-  features {}
-}
-
-
-variable "resource_group" {
-  default = "azuregoat_app"
-}
-
-variable "location" {
-  type = string
-  default = "eastus"
-}
- 
 # Create the resource group
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group
@@ -61,57 +33,51 @@ resource "null_resource" "file_populate_data" {
   provisioner "local-exec" {
     command     = <<EOF
 sed -i 's/AZURE_FUNCTION_URL/${azurerm_storage_account.storage_account.name}\.blob\.core\.windows\.net\/${azurerm_storage_container.storage_container_prod.name}/g' modules/module-1/resources/cosmosdb/blog-posts.json
-python3 -m venv azure-goat-environment
-source azure-goat-environment/bin/activate
+python3 -m venv azure-davi-environment
+source azure-davi-environment/bin/activate
 pip3 install --pre azure-cosmos
 python3 modules/module-1/resources/cosmosdb/create-table.py
 EOF
     interpreter = ["/bin/bash", "-c"]
   }
-  depends_on = [azurerm_cosmosdb_account.db,azurerm_storage_account.storage_account,azurerm_storage_container.storage_container]
+  depends_on = [azurerm_cosmosdb_account.db, azurerm_storage_account.storage_account, azurerm_storage_container.storage_container]
 }
 
 
 
 
 resource "azurerm_storage_account" "storage_account" {
-  name = "appazgoat${random_id.randomId.dec}storage"
-  resource_group_name = var.resource_group
-  location = var.location
-  account_tier = "Standard"
-  account_replication_type = "LRS"
+  name                            = "appazdavi${random_id.randomId.dec}storage"
+  resource_group_name             = var.resource_group
+  location                        = var.location
+  account_tier                    = "Standard"
+  account_replication_type        = "LRS"
   allow_nested_items_to_be_public = true
 
-  blob_properties{
-    cors_rule{
-        allowed_headers = ["*"]
-        allowed_methods = ["GET","HEAD","POST","PUT"]
-        allowed_origins = ["*"]
-        exposed_headers = ["*"]
-        max_age_in_seconds = 3600
-        }
+  blob_properties {
+    cors_rule {
+      allowed_headers    = ["*"]
+      allowed_methods    = ["GET", "HEAD", "POST", "PUT"]
+      allowed_origins    = ["*"]
+      exposed_headers    = ["*"]
+      max_age_in_seconds = 3600
     }
+  }
 
   depends_on = [azurerm_resource_group.rg]
 }
 
 resource "azurerm_storage_container" "storage_container" {
-    name = "appazgoat${random_id.randomId.dec}-storage-container"
-    storage_account_name = azurerm_storage_account.storage_account.name
-    container_access_type = "blob"
+  name                  = "appazdavi${random_id.randomId.dec}-storage-container"
+  storage_account_name  = azurerm_storage_account.storage_account.name
+  container_access_type = "blob"
 }
 
-locals {
-  now = timestamp()
-  sasExpiry = timeadd(local.now, "240h")
-  date_now = formatdate("YYYY-MM-DD", local.now)
-  date_br = formatdate("YYYY-MM-DD", local.sasExpiry)
-}
 data "azurerm_storage_account_blob_container_sas" "storage_account_blob_container_sas" {
   connection_string = azurerm_storage_account.storage_account.primary_connection_string
   container_name    = azurerm_storage_container.storage_container.name
-  start  = "${local.date_now}"
-  expiry = "${local.date_br}"
+  start             = local.date_now
+  expiry            = local.date_br
   permissions {
     read   = true
     add    = true
@@ -135,7 +101,7 @@ sed -i 's`CONTAINER_NAME_REPLACE`${azurerm_storage_container.storage_container.n
 EOF
     interpreter = ["/bin/bash", "-c"]
   }
-  depends_on = [azurerm_cosmosdb_account.db,azurerm_storage_account.storage_account,azurerm_storage_container.storage_container]
+  depends_on = [azurerm_cosmosdb_account.db, azurerm_storage_account.storage_account, azurerm_storage_container.storage_container]
 }
 
 
@@ -149,17 +115,17 @@ data "archive_file" "file_function_app" {
 }
 
 resource "azurerm_storage_blob" "storage_blob" {
-  name = "modules/module-1/resources/azure_function/data/data-api.zip"
-  storage_account_name = azurerm_storage_account.storage_account.name
+  name                   = "modules/module-1/resources/azure_function/data/data-api.zip"
+  storage_account_name   = azurerm_storage_account.storage_account.name
   storage_container_name = azurerm_storage_container.storage_container.name
-  type = "Block"
-  source = "modules/module-1/resources/azure_function/data/data-api.zip"
-  depends_on = [data.archive_file.file_function_app]
+  type                   = "Block"
+  source                 = "modules/module-1/resources/azure_function/data/data-api.zip"
+  depends_on             = [data.archive_file.file_function_app]
 }
 
 
 resource "azurerm_service_plan" "app_service_plan" {
-  name                = "appazgoat${random_id.randomId.dec}-app-service-plan"
+  name                = "appazdavi${random_id.randomId.dec}-app-service-plan"
   resource_group_name = var.resource_group
   location            = var.location
   os_type             = "Linux"
@@ -169,23 +135,23 @@ resource "azurerm_service_plan" "app_service_plan" {
 }
 
 resource "azurerm_linux_function_app" "function_app" {
-  name                       = "appazgoat${random_id.randomId.dec}-function"
+  name                       = "appazdavi${random_id.randomId.dec}-function"
   resource_group_name        = var.resource_group
   location                   = var.location
   service_plan_id            = azurerm_service_plan.app_service_plan.id
   storage_account_name       = azurerm_storage_account.storage_account.name
   storage_account_access_key = azurerm_storage_account.storage_account.primary_access_key
-  
+
   app_settings = {
-    "WEBSITE_RUN_FROM_PACKAGE"    = "https://${azurerm_storage_account.storage_account.name}.blob.core.windows.net/${azurerm_storage_container.storage_container.name}/${azurerm_storage_blob.storage_blob.name}${data.azurerm_storage_account_blob_container_sas.storage_account_blob_container_sas.sas}",
+    "WEBSITE_RUN_FROM_PACKAGE" = "https://${azurerm_storage_account.storage_account.name}.blob.core.windows.net/${azurerm_storage_container.storage_container.name}/${azurerm_storage_blob.storage_blob.name}${data.azurerm_storage_account_blob_container_sas.storage_account_blob_container_sas.sas}",
     "FUNCTIONS_WORKER_RUNTIME" = "python",
-    "JWT_SECRET" = "T2BYL6#]zc>Byuzu",
-    "AZ_DB_ENDPOINT" = "${azurerm_cosmosdb_account.db.endpoint}",
-    "AZ_DB_PRIMARYKEY" = "${azurerm_cosmosdb_account.db.primary_key}",
-    "CON_STR" = "${azurerm_storage_account.storage_account.primary_connection_string}"
-    "CONTAINER_NAME" = "${azurerm_storage_container.storage_container.name}"
+    "JWT_SECRET"               = "T2BYL6#]zc>Byuzu",
+    "AZ_DB_ENDPOINT"           = "${azurerm_cosmosdb_account.db.endpoint}",
+    "AZ_DB_PRIMARYKEY"         = "${azurerm_cosmosdb_account.db.primary_key}",
+    "CON_STR"                  = "${azurerm_storage_account.storage_account.primary_connection_string}"
+    "CONTAINER_NAME"           = "${azurerm_storage_container.storage_container.name}"
   }
-  
+
   site_config {
     application_stack {
       python_version = "3.9"
@@ -194,7 +160,7 @@ resource "azurerm_linux_function_app" "function_app" {
       allowed_origins = ["*"]
     }
   }
-  
+
   depends_on = [azurerm_cosmosdb_account.db, azurerm_storage_account.storage_account, null_resource.env_replace, azurerm_resource_group.rg]
 }
 
@@ -213,40 +179,23 @@ resource "random_id" "randomId" {
 
 # Storage Accounts Config
 #################################################################################
-locals {
-  mime_types = {
-    "css"  = "text/css"
-    "html" = "text/html"
-    "ico"  = "image/vnd.microsoft.icon"
-    "js"   = "application/javascript"
-    "json" = "application/json"
-    "map"  = "application/json"
-    "png"  = "image/png"
-    "jpg"  = "image/jpeg"
-    "svg"  = "image/svg+xml"
-    "txt"  = "text/plain"
-    "pub"  = "text/plain"
-    "pem"  = "text/plain"
-    "sh" = "text/x-shellscript"
-  }
-}
 
 
 resource "azurerm_storage_container" "storage_container_prod" {
-  name                  = "prod-appazgoat${random_id.randomId.dec}-storage-container"
+  name                  = "prod-appazdavi${random_id.randomId.dec}-storage-container"
   storage_account_name  = azurerm_storage_account.storage_account.name
   container_access_type = "blob"
 }
 
 
 resource "azurerm_storage_container" "storage_container_dev" {
-  name                  = "dev-appazgoat${random_id.randomId.dec}-storage-container"
+  name                  = "dev-appazdavi${random_id.randomId.dec}-storage-container"
   storage_account_name  = azurerm_storage_account.storage_account.name
   container_access_type = "container"
 }
 
 resource "azurerm_storage_container" "storage_container_vm" {
-  name                  = "vm-appazgoat${random_id.randomId.dec}-storage-container"
+  name                  = "vm-appazdavi${random_id.randomId.dec}-storage-container"
   storage_account_name  = azurerm_storage_account.storage_account.name
   container_access_type = "container"
 }
@@ -265,7 +214,7 @@ sed -i "s,AZURE_FUNCTION_URL,https:\/\/${azurerm_linux_function_app.function_app
 EOF 
     interpreter = ["/bin/bash", "-c"]
   }
-  depends_on = [data.azurerm_storage_account_blob_container_sas.storage_account_blob_container_sas,azurerm_storage_container.storage_container,azurerm_storage_account.storage_account]
+  depends_on = [data.azurerm_storage_account_blob_container_sas.storage_account_blob_container_sas, azurerm_storage_container.storage_container, azurerm_storage_account.storage_account]
 }
 
 resource "azurerm_storage_blob" "app_files_prod" {
@@ -276,7 +225,7 @@ resource "azurerm_storage_blob" "app_files_prod" {
   content_type           = lookup(tomap(local.mime_types), element(split(".", each.value), length(split(".", each.value)) - 1))
   type                   = "Block"
   source                 = "./modules/module-1/resources/storage_account/${each.value}"
-  depends_on = [null_resource.file_replacement_upload,azurerm_storage_container.storage_container_prod]
+  depends_on             = [null_resource.file_replacement_upload, azurerm_storage_container.storage_container_prod]
 }
 
 resource "azurerm_storage_blob" "app_files_dev" {
@@ -287,7 +236,7 @@ resource "azurerm_storage_blob" "app_files_dev" {
   content_type           = lookup(tomap(local.mime_types), element(split(".", each.value), length(split(".", each.value)) - 1))
   type                   = "Block"
   source                 = "./modules/module-1/resources/storage_account/${each.value}"
-  depends_on = [null_resource.file_replacement_upload,azurerm_storage_container.storage_container_dev]
+  depends_on             = [null_resource.file_replacement_upload, azurerm_storage_container.storage_container_dev]
 }
 
 
@@ -300,7 +249,7 @@ resource "azurerm_storage_blob" "app_files_vm" {
   content_type           = lookup(tomap(local.mime_types), element(split(".", each.value), length(split(".", each.value)) - 1))
   type                   = "Block"
   source                 = "./modules/module-1/resources/storage_account/${each.value}"
-  depends_on = [null_resource.file_replacement_upload,azurerm_storage_container.storage_container_vm]
+  depends_on             = [null_resource.file_replacement_upload, azurerm_storage_container.storage_container_vm]
 }
 
 
@@ -400,30 +349,30 @@ resource "azurerm_linux_virtual_machine" "dev-vm" {
   resource_group_name   = var.resource_group
   network_interface_ids = [azurerm_network_interface.net_int.id]
   size                  = "Standard_B1s"
-  
-  admin_username = "azureuser"
-  admin_password = "St0r95p@$sw0rd@1265463541"
+
+  admin_username                  = "azureuser"
+  admin_password                  = "St0r95p@$sw0rd@1265463541"
   disable_password_authentication = false
-  
+
   identity {
     type = "SystemAssigned"
   }
-  
+
   source_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"
     sku       = "18.04-LTS"
     version   = "latest"
   }
-  
+
   os_disk {
-    name              = "developerVMDisk"
-    caching           = "ReadWrite"
+    name                 = "developerVMDisk"
+    caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
-  
+
   computer_name = "developerVM"
-  
+
   depends_on = [
     azurerm_network_interface.net_int,
     azurerm_resource_group.rg
@@ -440,11 +389,11 @@ resource "azurerm_virtual_machine_extension" "test" {
   settings = <<SETTINGS
     {
         "script": "${base64encode(templatefile("modules/module-1/resources/vm/config.sh", {
-          URL="${azurerm_storage_account.storage_account.name}.blob.core.windows.net/${azurerm_storage_container.storage_container_prod.name}"
-        }))}"
+  URL = "${azurerm_storage_account.storage_account.name}.blob.core.windows.net/${azurerm_storage_container.storage_container_prod.name}"
+}))}"
     }
 SETTINGS
-depends_on = [null_resource.file_replacement_upload,azurerm_storage_blob.app_files_prod]
+depends_on = [null_resource.file_replacement_upload, azurerm_storage_blob.app_files_prod]
 }
 
 #Role Assignment
@@ -456,17 +405,17 @@ data "azurerm_client_config" "example" {
 }
 
 resource "azurerm_role_assignment" "az_role_assgn_vm" {
-  scope              = "${data.azurerm_subscription.primary.id}/resourceGroups/${var.resource_group}"
+  scope                = "${data.azurerm_subscription.primary.id}/resourceGroups/${var.resource_group}"
   role_definition_name = "Contributor"
-  principal_id       = azurerm_linux_virtual_machine.dev-vm.identity.0.principal_id
+  principal_id         = azurerm_linux_virtual_machine.dev-vm.identity.0.principal_id
 
   depends_on = [azurerm_resource_group.rg]
 }
 
 resource "azurerm_role_assignment" "az_role_assgn_identity" {
-  scope              = "${data.azurerm_subscription.primary.id}/resourceGroups/${var.resource_group}"
+  scope                = "${data.azurerm_subscription.primary.id}/resourceGroups/${var.resource_group}"
   role_definition_name = "Owner"
-  principal_id       = azurerm_user_assigned_identity.user_id.principal_id
+  principal_id         = azurerm_user_assigned_identity.user_id.principal_id
   depends_on = [
     azurerm_user_assigned_identity.user_id,
     azurerm_resource_group.rg
@@ -476,7 +425,7 @@ resource "azurerm_role_assignment" "az_role_assgn_identity" {
 
 resource "azurerm_user_assigned_identity" "user_id" {
   resource_group_name = var.resource_group
-  location              = var.location
+  location            = var.location
 
   name = "user-assigned-id${random_id.randomId.dec}"
 
@@ -484,12 +433,12 @@ resource "azurerm_user_assigned_identity" "user_id" {
 }
 
 resource "azurerm_automation_account" "dev_automation_account_test" {
-  name                = "dev-automation-account-appazgoat${random_id.randomId.dec}"
-  location              = var.location
+  name                = "dev-automation-account-appazdavi${random_id.randomId.dec}"
+  location            = var.location
   resource_group_name = var.resource_group
   sku_name            = "Basic"
-    identity {
-    type = "UserAssigned"
+  identity {
+    type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.user_id.id]
   }
 
@@ -502,12 +451,12 @@ resource "azurerm_automation_account" "dev_automation_account_test" {
 
 data "local_file" "runbook_file" {
   filename = "modules/module-1/resources/vm/listVM.ps1"
-depends_on = [
-  null_resource.clientid_replacement
-]
+  depends_on = [
+    null_resource.clientid_replacement
+  ]
 }
 resource "null_resource" "clientid_replacement" {
-    provisioner "local-exec" {
+  provisioner "local-exec" {
     command     = <<EOF
 sed -i 's/REPLACE_CLIENT_ID/${azurerm_user_assigned_identity.user_id.client_id}/g' modules/module-1/resources/vm/listVM.ps1
 sed -i 's/REPLACE_RESOURCE_GROUP_NAME/${var.resource_group}/g' modules/module-1/resources/vm/listVM.ps1
@@ -518,14 +467,14 @@ EOF
 
 resource "azurerm_automation_runbook" "dev_automation_runbook" {
   name                    = "Get-AzureVM"
-  location              = var.location
+  location                = var.location
   resource_group_name     = var.resource_group
   automation_account_name = azurerm_automation_account.dev_automation_account_test.name
   log_verbose             = "true"
   log_progress            = "true"
   description             = "This is an example runbook"
   runbook_type            = "PowerShellWorkflow"
-  content = data.local_file.runbook_file.content
+  content                 = data.local_file.runbook_file.content
 
   depends_on = [azurerm_resource_group.rg]
 }
@@ -537,39 +486,39 @@ data "archive_file" "file_function_app_front" {
   type        = "zip"
   source_dir  = "modules/module-1/resources/azure_function/react"
   output_path = "modules/module-1/resources/azure_function/react/func.zip"
-  depends_on = [null_resource.file_replacement_upload]
+  depends_on  = [null_resource.file_replacement_upload]
 }
 
 resource "azurerm_storage_blob" "storage_blob_front" {
-  name = "modules/module-1/resources/azure_function/react/func.zip"
-  storage_account_name = azurerm_storage_account.storage_account.name
+  name                   = "modules/module-1/resources/azure_function/react/func.zip"
+  storage_account_name   = azurerm_storage_account.storage_account.name
   storage_container_name = azurerm_storage_container.storage_container.name
-  type = "Block"
-  source = "modules/module-1/resources/azure_function/react/func.zip"
-  depends_on = [data.archive_file.file_function_app_front,azurerm_storage_container.storage_container]
+  type                   = "Block"
+  source                 = "modules/module-1/resources/azure_function/react/func.zip"
+  depends_on             = [data.archive_file.file_function_app_front, azurerm_storage_container.storage_container]
 }
 
 
 resource "azurerm_linux_function_app" "function_app_front" {
-  name                       = "appazgoat${random_id.randomId.dec}-function-app"
+  name                       = "appazdavi${random_id.randomId.dec}-function-app"
   resource_group_name        = var.resource_group
   location                   = var.location
   service_plan_id            = azurerm_service_plan.app_service_plan.id
   storage_account_name       = azurerm_storage_account.storage_account.name
   storage_account_access_key = azurerm_storage_account.storage_account.primary_access_key
-  
+
   app_settings = {
     "WEBSITE_RUN_FROM_PACKAGE"    = "https://${azurerm_storage_account.storage_account.name}.blob.core.windows.net/${azurerm_storage_container.storage_container.name}/${azurerm_storage_blob.storage_blob_front.name}${data.azurerm_storage_account_blob_container_sas.storage_account_blob_container_sas.sas}",
-    "FUNCTIONS_WORKER_RUNTIME" = "node",
+    "FUNCTIONS_WORKER_RUNTIME"    = "node",
     "AzureWebJobsDisableHomepage" = "true",
   }
-  
+
   site_config {
     application_stack {
       node_version = "12"
     }
   }
-  
+
   depends_on = [null_resource.file_replacement_upload, azurerm_resource_group.rg]
 }
 
@@ -578,7 +527,7 @@ resource "null_resource" "file_replacement_vm_ip" {
     command     = "sed -i 's/VM_IP_ADDR/${data.azurerm_public_ip.vm_ip.ip_address}/g' modules/module-1/resources/storage_account/shared/files/.ssh/config.txt"
     interpreter = ["/bin/bash", "-c"]
   }
-  depends_on = [azurerm_linux_virtual_machine.dev-vm,data.azurerm_public_ip.vm_ip]
+  depends_on = [azurerm_linux_virtual_machine.dev-vm, data.azurerm_public_ip.vm_ip]
 }
 resource "azurerm_storage_blob" "config_update_prod" {
   name                   = "modules/module-1/resources/storage_account/shared/files/.ssh/config.txt"
@@ -586,7 +535,7 @@ resource "azurerm_storage_blob" "config_update_prod" {
   storage_container_name = azurerm_storage_container.storage_container_prod.name
   type                   = "Block"
   source                 = "modules/module-1/resources/storage_account/shared/files/.ssh/config.txt"
-  depends_on = [null_resource.file_replacement_vm_ip]
+  depends_on             = [null_resource.file_replacement_vm_ip]
 }
 
 resource "azurerm_storage_blob" "config_update_dev" {
@@ -595,7 +544,7 @@ resource "azurerm_storage_blob" "config_update_dev" {
   storage_container_name = azurerm_storage_container.storage_container_dev.name
   type                   = "Block"
   source                 = "modules/module-1/resources/storage_account/shared/files/.ssh/config.txt"
-  depends_on = [null_resource.file_replacement_vm_ip]
+  depends_on             = [null_resource.file_replacement_vm_ip]
 }
 
 resource "azurerm_storage_blob" "config_update_vm" {
@@ -604,10 +553,6 @@ resource "azurerm_storage_blob" "config_update_vm" {
   storage_container_name = azurerm_storage_container.storage_container_vm.name
   type                   = "Block"
   source                 = "modules/module-1/resources/storage_account/shared/files/.ssh/config.txt"
-  depends_on = [null_resource.file_replacement_vm_ip]
+  depends_on             = [null_resource.file_replacement_vm_ip]
 }
-  
-output "Target_URL"{
-  value = "https://${azurerm_linux_function_app.function_app_front.default_hostname}"
-}
-    
+

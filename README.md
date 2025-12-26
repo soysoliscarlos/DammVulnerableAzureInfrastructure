@@ -73,7 +73,19 @@ az login
 
 And follow the steps to sign in.
 
-**Step 3.** Use terraform to deploy DAVI
+**Step 3.** Set your Azure subscription ID
+
+```sh
+export TF_VAR_subscription_id="<your-subscription-id>"
+```
+
+You can get your subscription ID by running:
+
+```sh
+az account show --query id -o tsv
+```
+
+**Step 4.** Use terraform to deploy DAVI
 
 ```sh
 terraform init
@@ -89,7 +101,7 @@ This repository includes a GitHub Actions workflow that automatically deploys th
 1. **Azure Account** with appropriate permissions
 2. **Azure App Registration** (Service Principal) with Contributor access to your subscription
 
-Note: The resource group "azuregoat_app" will be created automatically by Terraform.
+Note: The resource group "azuredavi_app" will be created automatically by Terraform.
 
 ### Setting up Azure App Registration
 
