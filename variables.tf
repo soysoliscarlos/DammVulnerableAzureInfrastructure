@@ -5,7 +5,7 @@ variable "subscription_id" {
 }
 
 variable "resource_group" {
-  default = "azuregoat_app"
+  default = "azuredavi_app"
 }
 
 variable "location" {

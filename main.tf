@@ -33,8 +33,8 @@ resource "null_resource" "file_populate_data" {
   provisioner "local-exec" {
     command     = <<EOF
 sed -i 's/AZURE_FUNCTION_URL/${azurerm_storage_account.storage_account.name}\.blob\.core\.windows\.net\/${azurerm_storage_container.storage_container_prod.name}/g' modules/module-1/resources/cosmosdb/blog-posts.json
-python3 -m venv azure-goat-environment
-source azure-goat-environment/bin/activate
+python3 -m venv azure-davi-environment
+source azure-davi-environment/bin/activate
 pip3 install --pre azure-cosmos
 python3 modules/module-1/resources/cosmosdb/create-table.py
 EOF
@@ -47,7 +47,7 @@ EOF
 
 
 resource "azurerm_storage_account" "storage_account" {
-  name                            = "appazgoat${random_id.randomId.dec}storage"
+  name                            = "appazdavi${random_id.randomId.dec}storage"
   resource_group_name             = var.resource_group
   location                        = var.location
   account_tier                    = "Standard"
@@ -68,7 +68,7 @@ resource "azurerm_storage_account" "storage_account" {
 }
 
 resource "azurerm_storage_container" "storage_container" {
-  name                  = "appazgoat${random_id.randomId.dec}-storage-container"
+  name                  = "appazdavi${random_id.randomId.dec}-storage-container"
   storage_account_name  = azurerm_storage_account.storage_account.name
   container_access_type = "blob"
 }
@@ -125,7 +125,7 @@ resource "azurerm_storage_blob" "storage_blob" {
 
 
 resource "azurerm_service_plan" "app_service_plan" {
-  name                = "appazgoat${random_id.randomId.dec}-app-service-plan"
+  name                = "appazdavi${random_id.randomId.dec}-app-service-plan"
   resource_group_name = var.resource_group
   location            = var.location
   os_type             = "Linux"
@@ -135,7 +135,7 @@ resource "azurerm_service_plan" "app_service_plan" {
 }
 
 resource "azurerm_linux_function_app" "function_app" {
-  name                       = "appazgoat${random_id.randomId.dec}-function"
+  name                       = "appazdavi${random_id.randomId.dec}-function"
   resource_group_name        = var.resource_group
   location                   = var.location
   service_plan_id            = azurerm_service_plan.app_service_plan.id
@@ -182,20 +182,20 @@ resource "random_id" "randomId" {
 
 
 resource "azurerm_storage_container" "storage_container_prod" {
-  name                  = "prod-appazgoat${random_id.randomId.dec}-storage-container"
+  name                  = "prod-appazdavi${random_id.randomId.dec}-storage-container"
   storage_account_name  = azurerm_storage_account.storage_account.name
   container_access_type = "blob"
 }
 
 
 resource "azurerm_storage_container" "storage_container_dev" {
-  name                  = "dev-appazgoat${random_id.randomId.dec}-storage-container"
+  name                  = "dev-appazdavi${random_id.randomId.dec}-storage-container"
   storage_account_name  = azurerm_storage_account.storage_account.name
   container_access_type = "container"
 }
 
 resource "azurerm_storage_container" "storage_container_vm" {
-  name                  = "vm-appazgoat${random_id.randomId.dec}-storage-container"
+  name                  = "vm-appazdavi${random_id.randomId.dec}-storage-container"
   storage_account_name  = azurerm_storage_account.storage_account.name
   container_access_type = "container"
 }
@@ -433,7 +433,7 @@ resource "azurerm_user_assigned_identity" "user_id" {
 }
 
 resource "azurerm_automation_account" "dev_automation_account_test" {
-  name                = "dev-automation-account-appazgoat${random_id.randomId.dec}"
+  name                = "dev-automation-account-appazdavi${random_id.randomId.dec}"
   location            = var.location
   resource_group_name = var.resource_group
   sku_name            = "Basic"
@@ -500,7 +500,7 @@ resource "azurerm_storage_blob" "storage_blob_front" {
 
 
 resource "azurerm_linux_function_app" "function_app_front" {
-  name                       = "appazgoat${random_id.randomId.dec}-function-app"
+  name                       = "appazdavi${random_id.randomId.dec}-function-app"
   resource_group_name        = var.resource_group
   location                   = var.location
   service_plan_id            = azurerm_service_plan.app_service_plan.id

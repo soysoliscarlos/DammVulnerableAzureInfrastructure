@@ -101,7 +101,7 @@ This repository includes a GitHub Actions workflow that automatically deploys th
 1. **Azure Account** with appropriate permissions
 2. **Azure App Registration** (Service Principal) with Contributor access to your subscription
 
-Note: The resource group "azuregoat_app" will be created automatically by Terraform.
+Note: The resource group "azuredavi_app" will be created automatically by Terraform.
 
 ### Setting up Azure App Registration
 

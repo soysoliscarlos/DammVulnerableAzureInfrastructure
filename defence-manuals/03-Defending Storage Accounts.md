@@ -32,7 +32,7 @@ Notice that the URL has the container name in it, and it starts with prod. So th
 
 The development container URL is mentioned below. Here we changed prod to dev by guessing.
 ```
-https://appazgoat9458436storage.blob.core.windows.net/dev-appazgoat9458436-storage-container/webfiles/build/favicon/logo.png
+https://appazdavi9458436storage.blob.core.windows.net/dev-appazdavi9458436-storage-container/webfiles/build/favicon/logo.png
 ```
 ![](images/3_defending_storage_accounts/7.png) 
 
@@ -124,7 +124,7 @@ The red coloured warning symbol indicates Danger, the Yellow coloured warning sy
 ![](images/3_defending_storage_accounts/22.png)
 
 
-**Step 13:** Open the *appazgoatxxxxxxxstorage* storage account.
+**Step 13:** Open the *appazdavixxxxxxxstorage* storage account.
 
 ![](images/3_defending_storage_accounts/23.png)
 
@@ -136,7 +136,7 @@ With Container level access, a user can READ/DOWNLOAD even without knowing the n
 
 ![](images/3_defending_storage_accounts/24.png)
 
-**Step 14:** Open the portal and click on appazgoatxxxxxxxstorage Storage account.
+**Step 14:** Open the portal and click on appazdavixxxxxxxstorage Storage account.
 
 ![](images/3_defending_storage_accounts/25.png)
 

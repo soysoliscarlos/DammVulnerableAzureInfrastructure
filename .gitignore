@@ -34,7 +34,7 @@ override.tf.json
 terraform.rc
 
 # Python virtual environments
-azure-goat-environment/
+azure-davi-environment/
 venv/
 env/
 
