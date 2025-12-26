@@ -73,7 +73,19 @@ az login
 
 And follow the steps to sign in.
 
-**Step 3.** Use terraform to deploy DAVI
+**Step 3.** Set your Azure subscription ID
+
+```sh
+export TF_VAR_subscription_id="<your-subscription-id>"
+```
+
+You can get your subscription ID by running:
+
+```sh
+az account show --query id -o tsv
+```
+
+**Step 4.** Use terraform to deploy DAVI
 
 ```sh
 terraform init

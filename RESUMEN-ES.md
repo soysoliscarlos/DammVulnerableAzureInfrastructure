@@ -398,7 +398,18 @@ az login
 ```
 Esto abrirá un navegador para autenticación. Sigue las instrucciones.
 
-#### **Paso 3: Crear Resource Group**
+#### **Paso 3: Configurar el Subscription ID**
+```bash
+export TF_VAR_subscription_id="<tu-subscription-id>"
+```
+
+Puedes obtener tu subscription ID ejecutando:
+
+```bash
+az account show --query id -o tsv
+```
+
+#### **Paso 4: Crear Resource Group**
 ```bash
 # Crear el resource group manualmente
 az group create --name azuregoat_app --location eastus
@@ -406,16 +417,16 @@ az group create --name azuregoat_app --location eastus
 
 **⚠️ IMPORTANTE:** El resource group DEBE llamarse `azuregoat_app` (está hardcoded en el código)
 
-#### **Paso 4: Inicializar Terraform**
+#### **Paso 5: Inicializar Terraform**
 ```bash
 terraform init
 ```
 
 Esto descargará los providers necesarios:
-- `hashicorp/azurerm` v3.11.0
-- `hashicorp/random` v3.1.0
+- `hashicorp/azurerm` v4.0+
+- `hashicorp/random` v3.6+
 
-#### **Paso 5: Desplegar la Infraestructura**
+#### **Paso 6: Desplegar la Infraestructura**
 ```bash
 terraform apply --auto-approve
 ```
