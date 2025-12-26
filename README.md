@@ -1,14 +1,16 @@
-# AzureGoat : A Damn Vulnerable Azure Infrastructure
+# DAVI: Damm Azure Vulnerable Infrastructure
 
 > 🇪🇸 **¿Hablas español?** Lee la [documentación completa en español (RESUMEN-ES.md)](./RESUMEN-ES.md) para una guía detallada del repositorio.
+
+> **Note:** This project is a fork of the original [AzureGoat](https://github.com/ine-labs/AzureGoat) project by INE Labs.
 
 ![1](https://user-images.githubusercontent.com/25884689/183740998-da6f7ae7-2df0-4557-a6f5-2f0040ebe0dc.png)
 
 Compromising an organization's cloud infrastructure is like sitting on a gold mine for attackers. And sometimes, a simple misconfiguration or a vulnerability in web applications, is all an attacker needs to compromise the entire infrastructure. Since the cloud is relatively new, many developers are not fully aware of the threatscape and they end up deploying a vulnerable cloud infrastructure. Microsoft Azure cloud has become the second-largest vendor by market share in the cloud infrastructure providers (as per multiple reports), just behind AWS. There are numerous tools and vulnerable applications available for AWS for the security professional to perform attack/defense practices, but it is not the case with Azure. There are far fewer options available to the community.
 
-AzureGoat is a vulnerable by design infrastructure on Azure featuring the latest released OWASP Top 10 web application security risks (2021) and other misconfiguration based on services such as App Functions, CosmosDB, Storage Accounts, Automation and Identities. AzureGoat mimics real-world infrastructure but with added vulnerabilities. It features multiple escalation paths and is focused on a black-box approach.
+DAVI (Damm Azure Vulnerable Infrastructure) is a vulnerable by design infrastructure on Azure featuring the latest released OWASP Top 10 web application security risks (2021) and other misconfiguration based on services such as App Functions, CosmosDB, Storage Accounts, Automation and Identities. DAVI mimics real-world infrastructure but with added vulnerabilities. It features multiple escalation paths and is focused on a black-box approach.
 
-AzureGoat uses IaC (Terraform) to deploy the vulnerable cloud infrastructure on the user's Azure account. This gives the user complete control over code, infrastructure, and environment. Using AzureGoat, the user can learn/practice:
+DAVI uses IaC (Terraform) to deploy the vulnerable cloud infrastructure on the user's Azure account. This gives the user complete control over code, infrastructure, and environment. Using DAVI, the user can learn/practice:
 - Cloud Pentesting/Red-teaming
 - Auditing IaC
 - Secure Coding
@@ -60,7 +62,7 @@ Here are the steps to follow:
 **Step 1.** Clone the repo
 
 ```sh
-git clone https://github.com/ine-labs/AzureGoat
+git clone https://github.com/soysoliscarlos/DammVulnerableAzureInfrastructure
 ```
 
 **Step 2.** Login to Azure CLI
@@ -71,14 +73,112 @@ az login
 
 And follow the steps to sign in.
 
-**Step 3.** Create a resource group with the name "azuregoat_app".
-
-**Step 4.** Use terraform to deploy AzureGoat
+**Step 3.** Use terraform to deploy DAVI
 
 ```sh
 terraform init
 terraform apply --auto-approve
 ```
+
+## Automated Deployment with GitHub Actions
+
+This repository includes a GitHub Actions workflow that automatically deploys the DAVI infrastructure when code is pushed to the main branch. The workflow uses Azure App Registration (Service Principal) for authentication.
+
+### Prerequisites for GitHub Actions Deployment
+
+1. **Azure Account** with appropriate permissions
+2. **Azure App Registration** (Service Principal) with Contributor access to your subscription
+
+Note: The resource group "azuregoat_app" will be created automatically by Terraform.
+
+### Setting up Azure App Registration
+
+Follow these steps to create and configure an Azure App Registration for GitHub Actions:
+
+**Step 1.** Create an App Registration (Service Principal)
+
+```sh
+# Create a service principal and assign Contributor role to your subscription
+az ad sp create-for-rbac --name "github-actions-davi" \
+  --role contributor \
+  --scopes /subscriptions/{subscription-id} \
+  --sdk-auth
+```
+
+Replace `{subscription-id}` with your actual Azure Subscription ID.
+
+**Step 2.** The command above will output JSON with credentials. Save this entire JSON output - you'll need it for GitHub secrets.
+
+Example output:
+```json
+{
+  "clientId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "clientSecret": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "subscriptionId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "tenantId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "activeDirectoryEndpointUrl": "https://login.microsoftonline.com",
+  "resourceManagerEndpointUrl": "https://management.azure.com/",
+  "activeDirectoryGraphResourceId": "https://graph.windows.net/",
+  "sqlManagementEndpointUrl": "https://management.core.windows.net:8443/",
+  "galleryEndpointUrl": "https://gallery.azure.com/",
+  "managementEndpointUrl": "https://management.core.windows.net/"
+}
+```
+
+### Configuring GitHub Secrets
+
+Navigate to your GitHub repository → Settings → Secrets and variables → Actions, and add the following secret:
+
+**Required Secret:**
+
+| Secret Name | Description | Value |
+|-------------|-------------|-------|
+| `AZURE_CREDENTIALS` | Complete JSON output from the `az ad sp create-for-rbac` command | Paste the entire JSON output |
+
+**Alternative Configuration (Individual Secrets):**
+
+If you prefer to use individual secrets instead of the JSON format, you can use:
+
+| Secret Name | Description | Example Value |
+|------------|-------------|---------------|
+| `AZURE_CLIENT_ID` | Application (client) ID of the App Registration | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` |
+| `AZURE_TENANT_ID` | Directory (tenant) ID of your Azure AD | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` |
+| `AZURE_CLIENT_SECRET` | Client secret of the App Registration | `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx` |
+| `AZURE_SUBSCRIPTION_ID` | Your Azure Subscription ID | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` |
+
+To use individual secrets, edit the `.github/workflows/terraform-deploy.yml` file and uncomment the alternative Azure Login step.
+
+### How the GitHub Actions Workflow Works
+
+The workflow (`.github/workflows/terraform-deploy.yml`) is triggered on:
+- **Push to main branch**: Automatically deploys changes
+- **Manual trigger**: Can be run manually from the Actions tab
+
+The workflow performs these steps:
+1. Checks out the repository code
+2. Sets up Python environment (required for CosmosDB scripts)
+3. Authenticates to Azure using the App Registration credentials
+4. Installs Terraform
+5. Runs `terraform init` to initialize the working directory
+6. Runs `terraform plan` to preview changes
+7. Runs `terraform apply` to deploy the infrastructure
+8. Displays the deployed application URL
+
+### Security Considerations
+
+- The App Registration has **Contributor** access to your Azure subscription
+- Keep your client secret secure and rotate it regularly
+- Consider using **Azure Workload Identity** (OIDC) for enhanced security in production environments
+- Review the deployed infrastructure regularly to ensure it's not exposed to the public internet unnecessarily
+- This is a **vulnerable by design** infrastructure - only deploy in isolated, non-production environments
+
+### Viewing Deployment Status
+
+After pushing to the main branch:
+1. Go to the **Actions** tab in your GitHub repository
+2. Click on the latest workflow run
+3. Monitor the deployment progress
+4. Once complete, the Target URL will be displayed in the job output
 
 # Modules
 

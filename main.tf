@@ -26,6 +26,11 @@ variable "location" {
   default = "eastus"
 }
  
+# Create the resource group
+resource "azurerm_resource_group" "rg" {
+  name     = var.resource_group
+  location = var.location
+}
 
 resource "azurerm_cosmosdb_account" "db" {
   name                = "ine-cosmos-db-data-${random_id.randomId.dec}"
@@ -48,6 +53,8 @@ resource "azurerm_cosmosdb_account" "db" {
     location          = "eastus"
     failover_priority = 0
   }
+
+  depends_on = [azurerm_resource_group.rg]
 }
 
 resource "null_resource" "file_populate_data" {
@@ -84,6 +91,8 @@ resource "azurerm_storage_account" "storage_account" {
         max_age_in_seconds = 3600
         }
     }
+
+  depends_on = [azurerm_resource_group.rg]
 }
 
 resource "azurerm_storage_container" "storage_container" {
@@ -155,6 +164,8 @@ resource "azurerm_service_plan" "app_service_plan" {
   location            = var.location
   os_type             = "Linux"
   sku_name            = "Y1"
+
+  depends_on = [azurerm_resource_group.rg]
 }
 
 resource "azurerm_linux_function_app" "function_app" {
@@ -184,7 +195,7 @@ resource "azurerm_linux_function_app" "function_app" {
     }
   }
   
-  depends_on = [azurerm_cosmosdb_account.db, azurerm_storage_account.storage_account, null_resource.env_replace]
+  depends_on = [azurerm_cosmosdb_account.db, azurerm_storage_account.storage_account, null_resource.env_replace, azurerm_resource_group.rg]
 }
 
 
@@ -314,6 +325,8 @@ resource "azurerm_network_security_group" "net_sg" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
+
+  depends_on = [azurerm_resource_group.rg]
 }
 
 
@@ -323,6 +336,8 @@ resource "azurerm_virtual_network" "vNet" {
   address_space       = ["10.1.0.0/16"]
   location            = var.location
   resource_group_name = var.resource_group
+
+  depends_on = [azurerm_resource_group.rg]
 }
 resource "azurerm_subnet" "vNet_subnet" {
   name                 = "Subnet${random_id.randomId.dec}"
@@ -343,6 +358,8 @@ resource "azurerm_public_ip" "VM_PublicIP" {
   idle_timeout_in_minutes = 4
   domain_name_label       = lower("developervm-${random_id.randomId.dec}")
   sku                     = "Basic"
+
+  depends_on = [azurerm_resource_group.rg]
 }
 data "azurerm_public_ip" "vm_ip" {
   name                = azurerm_public_ip.VM_PublicIP.name
@@ -364,7 +381,8 @@ resource "azurerm_network_interface" "net_int" {
   depends_on = [
     azurerm_network_security_group.net_sg,
     azurerm_public_ip.VM_PublicIP,
-    azurerm_subnet.vNet_subnet
+    azurerm_subnet.vNet_subnet,
+    azurerm_resource_group.rg
   ]
 }
 
@@ -407,7 +425,8 @@ resource "azurerm_linux_virtual_machine" "dev-vm" {
   computer_name = "developerVM"
   
   depends_on = [
-    azurerm_network_interface.net_int
+    azurerm_network_interface.net_int,
+    azurerm_resource_group.rg
   ]
 }
 
@@ -440,6 +459,8 @@ resource "azurerm_role_assignment" "az_role_assgn_vm" {
   scope              = "${data.azurerm_subscription.primary.id}/resourceGroups/${var.resource_group}"
   role_definition_name = "Contributor"
   principal_id       = azurerm_linux_virtual_machine.dev-vm.identity.0.principal_id
+
+  depends_on = [azurerm_resource_group.rg]
 }
 
 resource "azurerm_role_assignment" "az_role_assgn_identity" {
@@ -447,7 +468,8 @@ resource "azurerm_role_assignment" "az_role_assgn_identity" {
   role_definition_name = "Owner"
   principal_id       = azurerm_user_assigned_identity.user_id.principal_id
   depends_on = [
-    azurerm_user_assigned_identity.user_id
+    azurerm_user_assigned_identity.user_id,
+    azurerm_resource_group.rg
   ]
 }
 
@@ -457,6 +479,8 @@ resource "azurerm_user_assigned_identity" "user_id" {
   location              = var.location
 
   name = "user-assigned-id${random_id.randomId.dec}"
+
+  depends_on = [azurerm_resource_group.rg]
 }
 
 resource "azurerm_automation_account" "dev_automation_account_test" {
@@ -472,6 +496,8 @@ resource "azurerm_automation_account" "dev_automation_account_test" {
   tags = {
     environment = "development"
   }
+
+  depends_on = [azurerm_resource_group.rg]
 }
 
 data "local_file" "runbook_file" {
@@ -500,6 +526,8 @@ resource "azurerm_automation_runbook" "dev_automation_runbook" {
   description             = "This is an example runbook"
   runbook_type            = "PowerShellWorkflow"
   content = data.local_file.runbook_file.content
+
+  depends_on = [azurerm_resource_group.rg]
 }
 
 
@@ -542,7 +570,7 @@ resource "azurerm_linux_function_app" "function_app_front" {
     }
   }
   
-  depends_on = [null_resource.file_replacement_upload]
+  depends_on = [null_resource.file_replacement_upload, azurerm_resource_group.rg]
 }
 
 resource "null_resource" "file_replacement_vm_ip" {
