@@ -1,38 +1,3 @@
-terraform {
-  required_version = ">= 1.9.0"
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~> 4.0"
-    }
-    random = {
-      source  = "hashicorp/random"
-      version = "~> 3.6"
-    }
-  }
-}
-
-provider "azurerm" {
-  features {}
-  subscription_id = var.subscription_id
-}
-
-
-variable "subscription_id" {
-  type        = string
-  description = "Azure Subscription ID"
-  sensitive   = true
-}
-
-variable "resource_group" {
-  default = "azuregoat_app"
-}
-
-variable "location" {
-  type    = string
-  default = "eastus"
-}
-
 # Create the resource group
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group
@@ -108,12 +73,6 @@ resource "azurerm_storage_container" "storage_container" {
   container_access_type = "blob"
 }
 
-locals {
-  now       = timestamp()
-  sasExpiry = timeadd(local.now, "240h")
-  date_now  = formatdate("YYYY-MM-DD", local.now)
-  date_br   = formatdate("YYYY-MM-DD", local.sasExpiry)
-}
 data "azurerm_storage_account_blob_container_sas" "storage_account_blob_container_sas" {
   connection_string = azurerm_storage_account.storage_account.primary_connection_string
   container_name    = azurerm_storage_container.storage_container.name
@@ -220,23 +179,6 @@ resource "random_id" "randomId" {
 
 # Storage Accounts Config
 #################################################################################
-locals {
-  mime_types = {
-    "css"  = "text/css"
-    "html" = "text/html"
-    "ico"  = "image/vnd.microsoft.icon"
-    "js"   = "application/javascript"
-    "json" = "application/json"
-    "map"  = "application/json"
-    "png"  = "image/png"
-    "jpg"  = "image/jpeg"
-    "svg"  = "image/svg+xml"
-    "txt"  = "text/plain"
-    "pub"  = "text/plain"
-    "pem"  = "text/plain"
-    "sh"   = "text/x-shellscript"
-  }
-}
 
 
 resource "azurerm_storage_container" "storage_container_prod" {
@@ -612,9 +554,5 @@ resource "azurerm_storage_blob" "config_update_vm" {
   type                   = "Block"
   source                 = "modules/module-1/resources/storage_account/shared/files/.ssh/config.txt"
   depends_on             = [null_resource.file_replacement_vm_ip]
-}
-
-output "Target_URL" {
-  value = "https://${azurerm_linux_function_app.function_app_front.default_hostname}"
 }
 
