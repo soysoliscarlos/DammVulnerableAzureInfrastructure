@@ -3,9 +3,7 @@ locals {
   sasExpiry = timeadd(local.now, "240h")
   date_now  = formatdate("YYYY-MM-DD", local.now)
   date_br   = formatdate("YYYY-MM-DD", local.sasExpiry)
-}
 
-locals {
   mime_types = {
     "css"  = "text/css"
     "html" = "text/html"
