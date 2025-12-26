@@ -18,15 +18,6 @@ DAVI uses IaC (Terraform) to deploy the vulnerable cloud infrastructure on the u
 
 The project is divided into modules and each module is a separate web application, powered by varied tech stacks and development practices. 
 
-**Presented at**
-
-- [BlackHat USA 2022](https://www.blackhat.com/us-22/arsenal/schedule/index.html#azuregoat--a-damn-vulnerable-azure-infrastructure-28000)
-- [DC 30: Demo Labs](https://forum.defcon.org/node/242061)
-
-### Developed with :heart: by [INE](https://ine.com/) 
-
-[<img src="https://user-images.githubusercontent.com/25884689/184508144-f0196d79-5843-4ea6-ad39-0c14cd0da54c.png" alt="drawing" width="200"/>](https://discord.gg/TG7bpETgbg)
-
 ## Built With
 
 * Azure
