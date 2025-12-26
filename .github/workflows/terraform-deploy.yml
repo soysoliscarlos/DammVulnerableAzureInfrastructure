@@ -53,6 +53,13 @@ jobs:
       with:
         terraform_version: ">= 1.9.0"
 
+    # Extract subscription ID from Azure credentials and set as environment variable
+    - name: Set Subscription ID
+      run: |
+        SUBSCRIPTION_ID=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.subscriptionId')
+        echo "TF_VAR_subscription_id=$SUBSCRIPTION_ID" >> $GITHUB_ENV
+      shell: bash
+
     # Initialize a new or existing Terraform working directory
     - name: Terraform Init
       run: terraform init
