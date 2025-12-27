@@ -1,4 +1,4 @@
-# DAVI: Damm Azure Vulnerable Infrastructure
+# DAzVI: Damm Azure Vulnerable Infrastructure
 
 > 🇪🇸 **¿Hablas español?** Lee la [documentación completa en español (RESUMEN-ES.md)](./RESUMEN-ES.md) para una guía detallada del repositorio.
 
@@ -8,9 +8,9 @@
 
 Compromising an organization's cloud infrastructure is like sitting on a gold mine for attackers. And sometimes, a simple misconfiguration or a vulnerability in web applications, is all an attacker needs to compromise the entire infrastructure. Since the cloud is relatively new, many developers are not fully aware of the threatscape and they end up deploying a vulnerable cloud infrastructure. Microsoft Azure cloud has become the second-largest vendor by market share in the cloud infrastructure providers (as per multiple reports), just behind AWS. There are numerous tools and vulnerable applications available for AWS for the security professional to perform attack/defense practices, but it is not the case with Azure. There are far fewer options available to the community.
 
-DAVI (Damm Azure Vulnerable Infrastructure) is a vulnerable by design infrastructure on Azure featuring the latest released OWASP Top 10 web application security risks (2021) and other misconfiguration based on services such as App Functions, CosmosDB, Storage Accounts, Automation and Identities. DAVI mimics real-world infrastructure but with added vulnerabilities. It features multiple escalation paths and is focused on a black-box approach.
+DAzVI (Damm Azure Vulnerable Infrastructure) is a vulnerable by design infrastructure on Azure featuring the latest released OWASP Top 10 web application security risks (2021) and other misconfiguration based on services such as App Functions, CosmosDB, Storage Accounts, Automation and Identities. DAzVI mimics real-world infrastructure but with added vulnerabilities. It features multiple escalation paths and is focused on a black-box approach.
 
-DAVI uses IaC (Terraform) to deploy the vulnerable cloud infrastructure on the user's Azure account. This gives the user complete control over code, infrastructure, and environment. Using DAVI, the user can learn/practice:
+DAzVI uses IaC (Terraform) to deploy the vulnerable cloud infrastructure on the user's Azure account. This gives the user complete control over code, infrastructure, and environment. Using DAzVI, the user can learn/practice:
 - Cloud Pentesting/Red-teaming
 - Auditing IaC
 - Secure Coding
@@ -76,7 +76,7 @@ You can get your subscription ID by running:
 az account show --query id -o tsv
 ```
 
-**Step 4.** Use terraform to deploy DAVI
+**Step 4.** Use terraform to deploy DAzVI
 
 ```sh
 terraform init
@@ -85,14 +85,14 @@ terraform apply --auto-approve
 
 ## Automated Deployment with GitHub Actions
 
-This repository includes a GitHub Actions workflow that automatically deploys the DAVI infrastructure when code is pushed to the main branch. The workflow uses Azure App Registration (Service Principal) for authentication.
+This repository includes a GitHub Actions workflow that automatically deploys the DAzVI infrastructure when code is pushed to the main branch. The workflow uses Azure App Registration (Service Principal) for authentication.
 
 ### Prerequisites for GitHub Actions Deployment
 
 1. **Azure Account** with appropriate permissions
 2. **Azure App Registration** (Service Principal) with Contributor access to your subscription
 
-Note: The resource group "azuredavi_app" will be created automatically by Terraform.
+Note: The resource group "azuredazvi_app" will be created automatically by Terraform.
 
 ### Setting up Azure App Registration
 
@@ -102,7 +102,7 @@ Follow these steps to create and configure an Azure App Registration for GitHub 
 
 ```sh
 # Create a service principal and assign Contributor role to your subscription
-az ad sp create-for-rbac --name "github-actions-davi" \
+az ad sp create-for-rbac --name "github-actions-dazvi" \
   --role contributor \
   --scopes /subscriptions/{subscription-id} \
   --sdk-auth
