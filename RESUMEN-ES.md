@@ -1,7 +1,7 @@
-# AzureDavi - Resumen Detallado del Repositorio
+# AzureDAzVI - Resumen Detallado del Repositorio
 
 ## 📋 Índice
-1. [¿Qué es AzureDavi?](#qué-es-azuredavi)
+1. [¿Qué es AzureDAzVI?](#qué-es-azuredazvi)
 2. [Propósito y Objetivos](#propósito-y-objetivos)
 3. [Arquitectura y Componentes](#arquitectura-y-componentes)
 4. [Vulnerabilidades Implementadas](#vulnerabilidades-implementadas)
@@ -13,9 +13,9 @@
 
 ---
 
-## 🎯 ¿Qué es AzureDavi?
+## 🎯 ¿Qué es AzureDAzVI?
 
-**AzureDavi** es una infraestructura vulnerable diseñada intencionalmente en Microsoft Azure que simula un entorno real pero con vulnerabilidades de seguridad conocidas. Es un proyecto educativo basado en el trabajo de **INE (INE Labs)** para enseñar conceptos de seguridad en la nube.
+**AzureDAzVI** es una infraestructura vulnerable diseñada intencionalmente en Microsoft Azure que simula un entorno real pero con vulnerabilidades de seguridad conocidas. Es un proyecto educativo basado en el trabajo de **INE (INE Labs)** para enseñar conceptos de seguridad en la nube.
 
 ### Características Principales:
 - 🔴 **Infraestructura vulnerable por diseño** - Contiene vulnerabilidades reales para aprendizaje
@@ -104,7 +104,7 @@ Este repositorio está diseñado para que puedas **aprender y practicar**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     AZUREDAVI ARCHITECTURE                       │
+│                     AZUREDAZVI ARCHITECTURE                       │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                  │
 │  Usuario → Azure Function (Frontend)                            │
@@ -412,10 +412,10 @@ az account show --query id -o tsv
 #### **Paso 4: Crear Resource Group**
 ```bash
 # Crear el resource group manualmente
-az group create --name azuredavi_app --location eastus
+az group create --name azuredazvi_app --location eastus
 ```
 
-**⚠️ IMPORTANTE:** El resource group DEBE llamarse `azuredavi_app` (está hardcoded en el código)
+**⚠️ IMPORTANTE:** El resource group DEBE llamarse `azuredazvi_app` (está hardcoded en el código)
 
 #### **Paso 5: Inicializar Terraform**
 ```bash
@@ -445,7 +445,7 @@ terraform apply --auto-approve
 Al finalizar, Terraform mostrará:
 ```
 Outputs:
-Target_URL = "https://appazdavi<ID>-function-app.azurewebsites.net"
+Target_URL = "https://appazdazvi<ID>-function-app.azurewebsites.net"
 ```
 
 **¡Esta es la URL de tu aplicación vulnerable!**
@@ -680,7 +680,7 @@ python3 --version
 
 ### **🚨 SOLO PARA AMBIENTES DE PRUEBA**
 
-**NUNCA uses AzureDavi en:**
+**NUNCA uses AzureDAzVI en:**
 - ❌ Entornos de producción
 - ❌ Redes corporativas
 - ❌ Suscripciones de Azure con datos reales
@@ -688,7 +688,7 @@ python3 --version
 
 ### **💰 Costos de Azure:**
 
-AzureDavi crea recursos que **GENERAN COSTOS:**
+AzureDAzVI crea recursos que **GENERAN COSTOS:**
 - Azure Functions (consumo)
 - Cosmos DB Serverless
 - Storage Accounts
@@ -768,13 +768,13 @@ terraform destroy --auto-approve
 
 ## 🎓 Preguntas Frecuentes (FAQ)
 
-### **Q: ¿Es legal usar AzureDavi?**
+### **Q: ¿Es legal usar AzureDAzVI?**
 **A:** Sí, siempre y cuando:
 - Lo uses en TU propia suscripción Azure
 - No ataques infraestructuras de terceros
 - Fines educativos únicamente
 
-### **Q: ¿Cuánto cuesta ejecutar AzureDavi?**
+### **Q: ¿Cuánto cuesta ejecutar AzureDAzVI?**
 **A:** Aproximadamente $5-15 USD por día dependiendo del uso. **DESTRUYE** recursos cuando termines.
 
 ### **Q: ¿Necesito conocimientos previos?**
@@ -784,7 +784,7 @@ terraform destroy --auto-approve
 - Fundamentos de web security
 - Terraform (básico)
 
-### **Q: ¿Puedo usar AzureDavi para certificaciones?**
+### **Q: ¿Puedo usar AzureDAzVI para certificaciones?**
 **A:** Sí, es excelente para preparar:
 - AZ-500 (Azure Security)
 - CEH (Certified Ethical Hacker)
@@ -804,7 +804,7 @@ terraform destroy --auto-approve
 
 ## 📝 Resumen Ejecutivo
 
-**AzureDavi es tu laboratorio personal de seguridad en Azure.** Te permite:
+**AzureDAzVI es tu laboratorio personal de seguridad en Azure.** Te permite:
 
 ✅ **Aprender haciendo** - No solo teoría, práctica real  
 ✅ **Entorno seguro** - Tu propia infraestructura aislada  
@@ -835,7 +835,7 @@ cd DammVulnerableAzureInfrastructure
 az login
 
 # 3. Crear resource group
-az group create --name azuredavi_app --location eastus
+az group create --name azuredazvi_app --location eastus
 
 # 4. Desplegar
 terraform init

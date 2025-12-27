@@ -200,7 +200,7 @@ It takes 5-7 minutes to update the settings.
 
 ![](images/2_defending_against_web_application_ii/40.png)
 
-**Step 22:** Now open the function app: *appazdavixxxxxxx-function*.
+**Step 22:** Now open the function app: *appazdazvixxxxxxx-function*.
 
 ![](images/2_defending_against_web_application_ii/41.png)
 

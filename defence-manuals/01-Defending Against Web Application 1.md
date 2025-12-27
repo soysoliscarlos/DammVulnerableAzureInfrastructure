@@ -230,7 +230,7 @@ Policy for: *Global WAF (Front Door)*
 
 Front door tier: *Classic*
 
-Policy name: *azuredaviwaf*
+Policy name: *azuredazviwaf*
 
 Prevention mode: *Prevention*.
 

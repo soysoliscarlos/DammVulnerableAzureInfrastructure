@@ -39,7 +39,7 @@ Copy the generated output into a text editor.
 
 **Step 4:** Now list all the role assignments
 ```
-az role assignment list -g azuredavi_app
+az role assignment list -g azuredazvi_app
 ```
 
 ![](images/4_defending_privilege_escalations/16.png)
@@ -78,7 +78,7 @@ workflow Get-AzureVM
     Disable-AzContextAutosave -Scope Process
     $AzureContext = (Connect-Azaccount -Identity -AccountId <Client Id of dev-automation-account>).context
     $AzureContext = Set-AzContext -SubscriptionName $AzureContext.Subscription -DefaultProfile $AzureContext
-    New-AzRoleAssignment -RoleDefinitionName "Owner" -ObjectId <Principal Id of VM> -resourceGroupName azuredavi_app
+    New-AzRoleAssignment -RoleDefinitionName "Owner" -ObjectId <Principal Id of VM> -resourceGroupName azuredazvi_app
 }
 ```
 
@@ -99,7 +99,7 @@ Now you will see the following output.
 
 **Step 9:** Run the below command:
 ```
-az role assignment list -g azuredavi_app
+az role assignment list -g azuredazvi_app
 ```
 
 ![](images/4_defending_privilege_escalations/57.png)
@@ -110,7 +110,7 @@ We got the Owner access. Now, we will see how to prevent privilege escalation wi
 
 **Step 10:** Open the Azure Portal, log in as admin and remove the assigned Owner role from the VM.
 
-Goto azuredavi_app resource group and click on Access control(IAM).
+Goto azuredazvi_app resource group and click on Access control(IAM).
 
 **Note:** Securing Azure environment begins.
 
@@ -122,7 +122,7 @@ Select the developer VM from the Owner section and Click on remove, as shown in 
 
 **Step 11:** Go back to VM and check that our VM has no Owner role.
 ```
-az role assignment list -g azuredavi_app
+az role assignment list -g azuredazvi_app
 ```
 
 ![](images/4_defending_privilege_escalations/61.png)
@@ -193,13 +193,13 @@ The role Definition Id for the Owner is "8e3af657-a8ff-443c-a75c-2fe8c4bcb635". 
 
 ![](images/4_defending_privilege_escalations/9.png)
 
-**Step 19:** Click on *Compliance* from Policy blade and choose scope to azuredavi_app resource group.
+**Step 19:** Click on *Compliance* from Policy blade and choose scope to azuredazvi_app resource group.
 
 ![](images/4_defending_privilege_escalations/10.png)
 
 **Step 20:** Choose:
 
-Scope: YOUR_SUBSCRIPTION/azuredavi_app
+Scope: YOUR_SUBSCRIPTION/azuredazvi_app
 
 Compliance state: Non-compliant
 
@@ -261,7 +261,7 @@ This time will see how to create Alerts as well.
 
 ![](images/4_defending_privilege_escalations/32.png)
 
-**Step 29:** Choose ALL on filter type and choose *azuredavi_app* resource group.
+**Step 29:** Choose ALL on filter type and choose *azuredazvi_app* resource group.
 
 ![](images/4_defending_privilege_escalations/33.png)
 
